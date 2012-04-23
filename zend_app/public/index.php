@@ -37,5 +37,4 @@ $application = new Zend_Application(
 $application->bootstrap()
             ->run();
 $endTime = getTime();
-echo '
-Time taken total = ' . number_format(($endTime - $startTime),6). ' secs';
+echo number_format(($endTime - $startTime),6);

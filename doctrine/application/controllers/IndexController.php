@@ -44,9 +44,10 @@ class IndexController extends Zend_Controller_Action
 		$endTime = getTime();
 		$stats['memoryEnd'] = memory_get_usage() / 1024 . ' KB';
 		$stats['memoryPeak'] = memory_get_peak_usage() / 1024 . ' KB';
-		print_r($stats);
-		echo '
-Time taken executing queries = ' . number_format(($endTime - $startTime), 6). ' secs';
+        foreach ($stats as $value) {
+            echo $value . ',';
+        }
+        echo number_format(($endTime - $startTime), 6) . ',' ;
 		$this->_helper->viewRenderer->setRender('index');
     }
     
@@ -66,9 +67,10 @@ Time taken executing queries = ' . number_format(($endTime - $startTime), 6). ' 
         $endTime = getTime();
         $stats['memoryEnd'] = memory_get_usage() / 1024 . ' KB';
         $stats['memoryPeak'] = memory_get_peak_usage() / 1024 . ' KB';
-        print_r($stats);
-        echo '
-Time taken executing queries = ' . number_format(($endTime - $startTime), 6). ' secs';
+        foreach ($stats as $value) {
+            echo $value . ',';
+        }
+        echo number_format(($endTime - $startTime), 6) . ',' ;
         $this->_helper->viewRenderer->setRender('index');
     }
     
@@ -84,7 +86,7 @@ Time taken executing queries = ' . number_format(($endTime - $startTime), 6). ' 
         $store->setCreateTs(new DateTime(Zend_Date::now()->get(Zend_Date::ISO_8601)));
         $this->em->persist($store);
         $this->em->flush();
-        $this->em->clear();
+        //$this->em->clear();
         return $store;
     }
     

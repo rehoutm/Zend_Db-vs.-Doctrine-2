@@ -17,6 +17,37 @@ class IndexController extends Zend_Controller_Action
     public function init() {
         require APPLICATION_PATH . '/models/StoresTable.php';
         $this->table = new StoresTable;
+
+        // configure caching backend strategy
+        $oBackend = new Zend_Cache_Backend_Memcached(
+            array(
+                'servers' => array( array(
+                    'host' => '127.0.0.1',
+                    'port' => '11211'
+                ) ),
+                'compression' => true
+        ) );
+
+        // configure caching logger
+        $oCacheLog =  new Zend_Log();
+        $oCacheLog->addWriter( new Zend_Log_Writer_Stream( 'C:\memcache.log' ) );
+
+        // configure caching frontend strategy
+        $oFrontend = new Zend_Cache_Core(
+            array(
+                'caching' => true,
+                'cache_id_prefix' => 'myApp',
+                'logging' => true,
+                'logger'  => $oCacheLog,
+                'write_control' => true,
+                'automatic_serialization' => true,
+                'ignore_user_abort' => true
+            ) );
+
+        // build a caching object
+        $oCache = Zend_Cache::factory( $oFrontend, $oBackend );
+        Zend_Db_Table_Abstract::setDefaultMetadataCache($oCache);
+
 	}
 
 	/**
@@ -45,9 +76,10 @@ class IndexController extends Zend_Controller_Action
 		$endTime = getTime();
 		$stats['memoryEnd'] = memory_get_usage() / 1024 . ' KB';
 		$stats['memoryPeak'] = memory_get_peak_usage() / 1024 . ' KB';
-		print_r($stats);
-		echo '
-Time taken executing queries = ' . number_format(($endTime - $startTime), 6). ' secs';
+        foreach ($stats as $value) {
+            echo $value . ',';
+        }
+        echo number_format(($endTime - $startTime), 6) . ',' ;
 		$this->_helper->viewRenderer->setRender('index');
     }
     
@@ -67,9 +99,10 @@ Time taken executing queries = ' . number_format(($endTime - $startTime), 6). ' 
         $endTime = getTime();
         $stats['memoryEnd'] = memory_get_usage() / 1024 . ' KB';
         $stats['memoryPeak'] = memory_get_peak_usage() / 1024 . ' KB';
-        print_r($stats);
-        echo '
-Time taken executing queries = ' . number_format(($endTime - $startTime), 6). ' secs';
+        foreach ($stats as $value) {
+            echo $value . ',';
+        }
+        echo number_format(($endTime - $startTime), 6) . ',' ;
         $this->_helper->viewRenderer->setRender('index');
     }
     
@@ -94,6 +127,7 @@ Time taken executing queries = ' . number_format(($endTime - $startTime), 6). ' 
     protected function getStore() {
         $id = rand(1, 500);
         return $this->table->find($id)->current();
+        //return $this->table->fetchRow(array('store_id' => $id));
     }
 }
 
