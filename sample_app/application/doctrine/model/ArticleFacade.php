@@ -1,6 +1,6 @@
 <?php
 
-class ArticleFacade implements IArticleFacade {
+class ArticleFacade {
     
     protected $entityManager;
     

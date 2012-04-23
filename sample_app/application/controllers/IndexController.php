@@ -1,5 +1,7 @@
 <?php
 
+require "application/doctrine/model/ArticleFacade.php";
+
 class IndexController extends Zend_Controller_Action
 {
 
