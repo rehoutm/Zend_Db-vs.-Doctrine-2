@@ -29,7 +29,7 @@ class Comment {
     protected $text;
     
 	/**
-     * @ManyToOne(targetEntity="Article", inversedBy="comments"")
+     * @ManyToOne(targetEntity="Article", inversedBy="comments")
      * @var Article
      */
     protected $article;
